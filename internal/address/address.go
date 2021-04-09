@@ -9,10 +9,6 @@ import (
 	"test_go/internal/address/structure"
 )
 
-type CityInfo struct {
-	Floors [5]int
-}
-
 func Process(xmlFile *os.File) (map[string]int, map[string]CityInfo, error) {
 	itemsInfo := make(map[string]int)
 	cityInfo := make(map[string]CityInfo)
@@ -34,16 +30,20 @@ func Process(xmlFile *os.File) (map[string]int, map[string]CityInfo, error) {
 					return nil, nil, fmt.Errorf("failed to decode xml element: %s", err.Error())
 				}
 
+				floor, err := strconv.Atoi(item.Floor)
+				if err != nil {
+					return nil, nil, fmt.Errorf("provided non-numeric floor: %s", item.Floor)
+				}
+
+				if floor > maxFloor || floor < 1 {
+					return nil, nil, fmt.Errorf("provided unsupported floor: %d", floor)
+				}
+
 				key := item.GetRecord()
 				if _, ok := itemsInfo[key]; ok {
 					itemsInfo[key]++
 				} else {
 					itemsInfo[key] = 1
-				}
-
-				floor, err := strconv.Atoi(item.Floor)
-				if err != nil {
-					return nil, nil, fmt.Errorf("provided non-numeric floor: %s", item.Floor)
 				}
 
 				if val, ok := cityInfo[item.City]; ok {
