@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 	"test_go/internal/address/structure"
 )
 
-func Process(xmlFile *os.File) (map[string]int, map[string]CityInfo, error) {
+func Process(xmlFile *os.File) (map[string]int, map[string]structure.CityInfo, error) {
 	itemsInfo := make(map[string]int)
-	cityInfo := make(map[string]CityInfo)
+	cityInfo := make(map[string]structure.CityInfo)
 	decoder := xml.NewDecoder(xmlFile)
 	for {
 		token, err := decoder.Token()
@@ -30,13 +29,9 @@ func Process(xmlFile *os.File) (map[string]int, map[string]CityInfo, error) {
 					return nil, nil, fmt.Errorf("failed to decode xml element: %s", err.Error())
 				}
 
-				floor, err := strconv.Atoi(item.Floor)
+				floor, err := item.GetNumericFloor()
 				if err != nil {
-					return nil, nil, fmt.Errorf("provided non-numeric floor: %s", item.Floor)
-				}
-
-				if floor > maxFloor || floor < 1 {
-					return nil, nil, fmt.Errorf("provided unsupported floor: %d", floor)
+					return nil, nil, err
 				}
 
 				key := item.GetRecord()
