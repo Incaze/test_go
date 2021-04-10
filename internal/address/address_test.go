@@ -46,7 +46,7 @@ func TestProcess(t *testing.T) {
 
 	eqCityInfo := reflect.DeepEqual(cityInfoExpected, cityInfoActual)
 	if !eqCityInfo {
-		t.Fatal("Not equals items info")
+		t.Fatal("Not equals city info")
 	}
 
 	defer xmlFile.Close()

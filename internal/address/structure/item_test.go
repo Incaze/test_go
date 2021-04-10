@@ -6,10 +6,12 @@ import (
 )
 
 const (
-	getRecordExpected               = "City Saransk, Street Sovetskaya, House 35, Floor 5"
-	getNumericFloorExpectedPositive = 5
-	getNumericFloorExpectedNegative = "provided non-numeric floor: foo"
-	getNumericFloorProvidedNegative = "foo"
+	getRecordExpected                     = "City Saransk, Street Sovetskaya, House 35, Floor 5"
+	getNumericFloorExpectedPositive       = 5
+	getNumericFloorExpectedStringNegative = "provided non-numeric floor: foo"
+	getNumericFloorExpectedLimitNegative  = "provided unsupported floor: 7"
+	getNumericFloorProvidedLimitNegative  = "7"
+	getNumericFloorProvidedStringNegative = "foo"
 )
 
 var getRecordActualItem = structure.Item{
@@ -36,17 +38,31 @@ func TestItem_GetNumericFloor_Positive(t *testing.T) {
 	}
 }
 
-func TestItem_GetNumericFloor_Negative(t *testing.T) {
+func TestItem_GetNumericFloor_StringNegative(t *testing.T) {
 	test := structure.Item{
-		Floor: getNumericFloorProvidedNegative,
+		Floor: getNumericFloorProvidedStringNegative,
 	}
 	_, err := test.GetNumericFloor()
 	if err == nil {
 		t.Fatal("Expected some error")
 	}
 
-	if err.Error() != getNumericFloorExpectedNegative {
-		t.Fatalf("not equal: actual - %s; expected - %s", err, getNumericFloorExpectedNegative)
+	if err.Error() != getNumericFloorExpectedStringNegative {
+		t.Fatalf("not equal: actual - %s; expected - %s", err, getNumericFloorExpectedStringNegative)
+	}
+}
+
+func TestItem_GetNumericFloor_LimitNegative(t *testing.T) {
+	test := structure.Item{
+		Floor: getNumericFloorProvidedLimitNegative,
+	}
+	_, err := test.GetNumericFloor()
+	if err == nil {
+		t.Fatal("Expected some error")
+	}
+
+	if err.Error() != getNumericFloorExpectedLimitNegative {
+		t.Fatalf("not equal: actual - %s; expected - %s", err, getNumericFloorExpectedLimitNegative)
 	}
 }
 
